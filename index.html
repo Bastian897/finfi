@@ -214,6 +214,15 @@
     @media (max-width: 560px){
       .logo:after{ animation:none; }
       .cursor{ animation:none; opacity: 1; }
+
+      /* Make "$ finfi --what-i-do" readable on phones without changing desktop */
+      .ascii{
+        white-space: pre-wrap;      /* keep newlines + spaces, allow wrapping */
+        overflow-x: hidden;         /* avoid sideways scroll on small screens */
+        word-break: break-word;     /* wrap long chunks like “email / DM / …” */
+        font-size: 11px;
+        line-height: 1.45;
+      }
     }
 
     @media (prefers-reduced-motion: reduce){
