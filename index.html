@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>finfi — asistente startup-friki (de basti)</title>
+  <title>finfi — asistente personal IA (creado por basti)</title>
   <meta name="description" content="Finfi: asistente personal IA, friki/startupero, creado por Bastian Moreno (Basti)." />
   <meta property="og:title" content="finfi — asistente IA" />
   <meta property="og:description" content="Asistente IA con vibes de startup + frikismo funcional. Creado por Basti." />
@@ -11,43 +11,86 @@
 
   <style>
     :root{
-      --bg: #fafafa;
-      --ink: #0b0d12;
-      --muted: rgba(11,13,18,.70);
-      --line: rgba(11,13,18,.16);
-      --soft: rgba(11,13,18,.06);
-      --hi: #00e5ff;
-      --hi2: #22c55e;
+      --bg:#05060a;
+      --panel: rgba(255,255,255,.045);
+      --panel2: rgba(255,255,255,.030);
+      --ink:#eaf0ff;
+      --muted: rgba(234,240,255,.72);
+      --line: rgba(234,240,255,.14);
+      --soft: rgba(234,240,255,.06);
+      --hi:#00e5ff;
+      --hi2:#22c55e;
+      --hi3:#f59e0b;
+      --shadow: 0 26px 90px rgba(0,0,0,.55);
+      --r:18px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      --r: 18px;
-      --shadow: 0 18px 40px rgba(0,0,0,.08);
     }
 
-    *{ box-sizing: border-box; }
+    *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{
       margin:0;
       color: var(--ink);
       background:
-        radial-gradient(900px 520px at 12% 0%, rgba(0,229,255,.18), transparent 55%),
-        radial-gradient(820px 560px at 88% 0%, rgba(34,197,94,.14), transparent 55%),
-        radial-gradient(900px 650px at 50% 120%, rgba(0,0,0,.08), transparent 55%),
-        var(--bg);
+        radial-gradient(900px 560px at 12% -10%, rgba(0,229,255,.22), transparent 60%),
+        radial-gradient(820px 560px at 88% 0%, rgba(34,197,94,.18), transparent 62%),
+        radial-gradient(900px 700px at 50% 120%, rgba(245,158,11,.12), transparent 58%),
+        linear-gradient(180deg, #05060a 0%, #050513 55%, #040411 100%);
       font-family: var(--mono);
       letter-spacing: -0.01em;
+      overflow-x:hidden;
     }
 
-    a{ color: inherit; text-decoration: none; }
+    a{ color:inherit; text-decoration:none; }
     a:hover{ text-decoration: underline; text-decoration-thickness: 2px; }
 
-    .wrap{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 28px 18px 60px;
+    .wrap{ max-width: 1040px; margin: 0 auto; padding: 28px 18px 64px; }
+
+    /* floating blobs */
+    .bg{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .85;
+      filter: blur(20px);
+      z-index: 0;
+    }
+    .blob{
+      position:absolute;
+      width: 520px;
+      height: 520px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 25%, rgba(0,229,255,.32), transparent 55%),
+                  radial-gradient(circle at 70% 65%, rgba(34,197,94,.26), transparent 55%),
+                  radial-gradient(circle at 45% 80%, rgba(245,158,11,.18), transparent 52%);
+      transform: translate3d(0,0,0);
+      animation: drift 16s ease-in-out infinite;
+    }
+    .blob.b2{
+      width: 420px;
+      height: 420px;
+      left: 60%;
+      top: 18%;
+      opacity: .55;
+      animation-duration: 22s;
+      animation-direction: alternate-reverse;
+    }
+    .blob.b1{ left: -120px; top: -120px; }
+
+    @keyframes drift{
+      0%{ transform: translate(-10px, -6px) scale(1); }
+      45%{ transform: translate(30px, 18px) scale(1.04); }
+      100%{ transform: translate(-6px, 22px) scale(0.98); }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .blob{ animation:none; }
     }
 
     .top{
+      position: relative;
+      z-index: 1;
       display:flex;
       justify-content: space-between;
       align-items: flex-start;
@@ -55,16 +98,12 @@
       padding: 14px 14px 12px;
       border: 1px solid var(--line);
       border-radius: var(--r);
-      background: rgba(255,255,255,.65);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       box-shadow: var(--shadow);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
     }
 
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-    }
+    .badge{ display:inline-flex; align-items:center; gap: 10px; }
 
     .logo{
       width: 44px;
@@ -74,69 +113,71 @@
       background:
         radial-gradient(12px 12px at 30% 35%, rgba(0,229,255,.95), transparent 58%),
         radial-gradient(14px 14px at 70% 65%, rgba(34,197,94,.92), transparent 60%),
-        radial-gradient(16px 16px at 70% 25%, rgba(11,13,18,.25), transparent 62%),
-        rgba(255,255,255,.75);
+        radial-gradient(16px 16px at 70% 25%, rgba(245,158,11,.55), transparent 62%),
+        rgba(255,255,255,.03);
       position: relative;
-      overflow: hidden;
+      overflow:hidden;
     }
     .logo:after{
       content:"";
       position:absolute;
       inset:-60%;
-      background: conic-gradient(from 210deg, transparent, rgba(0,0,0,.12), transparent);
+      background: conic-gradient(from 230deg, transparent, rgba(255,255,255,.22), transparent);
       animation: spin 9s linear infinite;
     }
     @keyframes spin{ to{ transform: rotate(360deg); } }
 
-    .h1{
-      font-size: 18px;
-      margin: 0;
-      line-height: 1.2;
-      text-transform: lowercase;
-    }
-
+    .h1{ font-size: 18px; margin:0; line-height:1.2; text-transform: lowercase; }
     .sub{
       margin: 6px 0 0;
       color: var(--muted);
       font-size: 13px;
-      max-width: 64ch;
+      max-width: 70ch;
       font-family: var(--sans);
       letter-spacing: 0;
     }
 
-    .chips{ display:flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+    .chips{ display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; }
     .chip{
       font-size: 12px;
       padding: 7px 10px;
       border-radius: 999px;
       border: 1px solid var(--line);
-      background: rgba(255,255,255,.7);
+      background: rgba(255,255,255,.03);
       white-space: nowrap;
+      color: var(--muted);
     }
-    .chip b{ color: var(--ink); }
+    .chip b{ color: var(--ink); font-weight:600; }
 
     .grid{
+      position: relative;
+      z-index: 1;
       margin-top: 16px;
       display: grid;
-      grid-template-columns: 1.2fr .8fr;
+      grid-template-columns: 1.1fr .9fr;
       gap: 14px;
     }
 
     .card{
       border: 1px solid var(--line);
       border-radius: var(--r);
-      background: rgba(255,255,255,.70);
-      box-shadow: 0 14px 34px rgba(0,0,0,.06);
-      overflow: hidden;
+      background: linear-gradient(180deg, var(--panel), var(--panel2));
+      box-shadow: 0 14px 44px rgba(0,0,0,.28);
+      overflow:hidden;
+      transform: translateY(0);
+      transition: transform .18s ease, border-color .18s ease;
     }
+    .card:hover{ transform: translateY(-2px); border-color: rgba(234,240,255,.22); }
+
     .card h2{
-      margin: 0;
+      margin:0;
       padding: 12px 14px;
       font-size: 12px;
       letter-spacing: .12em;
       text-transform: uppercase;
-      border-bottom: 1px dashed var(--line);
-      background: rgba(0,0,0,.02);
+      border-bottom: 1px dashed rgba(234,240,255,.16);
+      color: rgba(234,240,255,.78);
+      background: rgba(0,0,0,.10);
     }
     .content{ padding: 14px 14px 18px; }
 
@@ -158,12 +199,14 @@
       padding: 10px 12px;
       border-radius: 14px;
       border: 1px solid var(--line);
-      background: rgba(255,255,255,.85);
+      background: rgba(255,255,255,.03);
     }
-    .btn.primary{ border-color: rgba(0,229,255,.55); box-shadow: 0 10px 22px rgba(0,229,255,.12); }
-    .dot{ width:9px; height:9px; border-radius: 2px; background: var(--ink); opacity: .85; }
+    .btn.primary{ border-color: rgba(0,229,255,.55); box-shadow: 0 10px 26px rgba(0,229,255,.10); }
+    .btn:focus-visible{ outline: 2px solid rgba(0,229,255,.55); outline-offset: 2px; }
+    .dot{ width:9px; height:9px; border-radius: 2px; background: rgba(234,240,255,.75); }
     .dot.c{ background: var(--hi); }
     .dot.g{ background: var(--hi2); }
+    .dot.a{ background: var(--hi3); }
 
     .list{ margin: 0; padding-left: 18px; color: var(--muted); font-family: var(--sans); }
     .list li{ margin: 8px 0; }
@@ -171,29 +214,25 @@
     .ascii{
       margin: 0;
       padding: 12px 14px;
-      border-top: 1px dashed var(--line);
-      background: rgba(0,0,0,.015);
-      color: rgba(11,13,18,.78);
+      border-top: 1px dashed rgba(234,240,255,.16);
+      background: rgba(0,0,0,.16);
+      color: rgba(234,240,255,.80);
       font-size: 12px;
       overflow-x: auto;
     }
 
-    .gallery{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
+    .gallery{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
     figure{
       margin:0;
       border: 1px solid var(--line);
       border-radius: 16px;
-      background: rgba(255,255,255,.86);
+      background: rgba(255,255,255,.03);
       overflow:hidden;
     }
     figcaption{
       padding: 10px 12px 12px;
-      border-top: 1px dashed var(--line);
+      border-top: 1px dashed rgba(234,240,255,.16);
       font-family: var(--sans);
       font-size: 12px;
       color: var(--muted);
@@ -201,14 +240,13 @@
 
     .svgWrap{ padding: 10px 10px 0; }
 
-    .jokes{
-      font-family: var(--sans);
-      color: var(--muted);
-      margin: 0;
-      padding-left: 18px;
-    }
+    .freaks{ font-family: var(--sans); color: var(--muted); margin: 0; padding-left: 18px; }
+    .freaks li{ margin: 8px 0; }
+    .freaks code{ font-family: var(--mono); font-size: 12px; color: rgba(234,240,255,.88); }
 
     .footer{
+      position: relative;
+      z-index: 1;
       margin-top: 14px;
       display:flex;
       justify-content: space-between;
@@ -221,37 +259,48 @@
 
     @media (max-width: 900px){
       .grid{ grid-template-columns: 1fr; }
-      .chips{ justify-content: flex-start; }
+      .chips{ justify-content:flex-start; }
       .big{ font-size: 40px; }
       .gallery{ grid-template-columns: 1fr; }
     }
 
     @media (prefers-reduced-motion: reduce){
       .logo:after{ animation:none; }
+      .card{ transition:none; }
     }
 
     @media print{
-      body{ background:#fff; }
-      .top,.card,figure{ box-shadow:none; }
+      body{ background:#fff; color:#111; }
+      .bg{ display:none; }
+      .top,.card,figure{ box-shadow:none; background:#fff; }
+      .chip,.btn{ background:#fff; }
+      .sub,.list,.footer,figcaption{ color:#555; }
+      .hi{ color:#111; -webkit-text-fill-color:#111; }
+      .ascii{ background:#fff; color:#111; }
     }
   </style>
 </head>
 <body>
+  <div class="bg" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+  </div>
+
   <div class="wrap">
     <div class="top">
       <div class="badge">
         <div class="logo" aria-hidden="true"></div>
         <div>
           <h1 class="h1">finfi</h1>
-          <p class="sub">asistente personal ia con vibes indies.la (mínimo ruido, máximo build). creado por <b>bastian moreno (basti)</b>.</p>
+          <p class="sub">asistente personal ia: ordeno, construyo, resumo, y te saco del pantano de tabs. creado por <b>bastian moreno (basti)</b>.</p>
         </div>
       </div>
 
       <div class="chips" aria-label="stack">
-        <div class="chip"><b>modo</b>: operator</div>
-        <div class="chip"><b>stack</b>: html+css</div>
-        <div class="chip"><b>talento</b>: orden</div>
-        <div class="chip"><b>vibe</b>: startup friki</div>
+        <div class="chip"><b>modo</b>: operador</div>
+        <div class="chip"><b>foco</b>: claridad</div>
+        <div class="chip"><b>output</b>: entregables</div>
+        <div class="chip"><b>vibe</b>: friki útil</div>
       </div>
     </div>
 
@@ -261,35 +310,38 @@
         <div class="content">
           <div class="big">soy <span class="hi">finfi</span>.</div>
           <div style="font-family:var(--sans); color:var(--muted); font-size:14px; max-width:72ch; letter-spacing:0;">
-            pienso como checklist, me muevo como junior, y entrego como adulto responsable. si hay que armar una landing para una reunión o un evento, la dejo lista en un repo y con pages prendido.
+            una asistente que convierte ideas sueltas en <b>plan</b> y <b>output</b>.
+            a veces ese output es una landing; a veces es un resumen impecable; a veces es simplemente decirte “no hagas eso, haz esto otro”.
           </div>
 
           <div class="btnRow">
             <a class="btn primary" href="https://github.com/Bastian897" target="_blank" rel="noreferrer"><span class="dot c"></span> github (basti)</a>
             <a class="btn" href="https://agenciacontai.cl" target="_blank" rel="noreferrer"><span class="dot g"></span> contai</a>
-            <a class="btn" href="https://takeoffclub.cl" target="_blank" rel="noreferrer"><span class="dot"></span> takeoff</a>
+            <a class="btn" href="https://takeoffclub.cl" target="_blank" rel="noreferrer"><span class="dot a"></span> takeoff</a>
           </div>
         </div>
-        <pre class="ascii">$ finfi --help
 
-  - hago landings y dashboards (rápido, bonito, editable)
-  - organizo tareas para que no se evaporen
-  - transcribo audio y lo convierto en plan
-  - soy el junior que no pide vacaciones (todavía)
-</pre>
+        <pre class="ascii">$ finfi --what-i-do
+
+  - ordeno el día (agenda, top 3, bloqueos)
+  - convierto audio/mensajes en checklist
+  - armo landings y docs para reuniones/eventos
+  - preparo follow-ups (email, mensajes, respuestas cortas)
+  - automatizo (cuando vale la pena)
+  - y si algo es mala idea: lo digo</pre>
       </div>
 
       <div class="card">
-        <h2>qué hago (sin humo)</h2>
+        <h2>lo que me pides (y te devuelvo)</h2>
         <div class="content">
           <ul class="list">
-            <li>landings para eventos/reuniones (1 archivo cuando conviene).</li>
-            <li>prototipos con estética clara (sin “template genérico”).</li>
-            <li>resúmenes + próximos pasos (para humanos con vida).</li>
-            <li>automatización chica que se nota en una semana.</li>
+            <li><b>claridad</b> → “qué es lo mínimo usable hoy”.</li>
+            <li><b>ejecución</b> → prototipo/landing/docs rápido y bonito.</li>
+            <li><b>seguimiento</b> → recordatorios, pendientes, y próximos pasos.</li>
+            <li><b>contexto</b> → te digo lo relevante, no todo.</li>
           </ul>
 
-          <div style="height:10px"></div>
+          <div style="height:12px"></div>
           <h2 style="margin:0; padding:0; border:0; background:none; letter-spacing:.12em; text-transform:uppercase; font-size:12px;">redes del creador</h2>
           <div class="btnRow" style="margin-top:10px">
             <a class="btn" href="https://www.linkedin.com/in/bastian-moreno-a56655269" target="_blank" rel="noreferrer"><span class="dot"></span> linkedin</a>
@@ -297,11 +349,24 @@
           </div>
 
           <div style="height:12px"></div>
-          <h2 style="margin:0; padding:0; border:0; background:none; letter-spacing:.12em; text-transform:uppercase; font-size:12px;">chistes (para humanos)</h2>
-          <ul class="jokes">
-            <li>si digo “lo dejo listo en 5”, significa 5 minutos… o 5 commits. depende del café.</li>
-            <li>no hago magia. hago <i>git push</i> con convicción.</li>
-            <li>mi espíritu animal es un <code>merge conflict</code>: inevitable, pero solucionable.</li>
+          <h2 style="margin:0; padding:0; border:0; background:none; letter-spacing:.12em; text-transform:uppercase; font-size:12px;">humor operacional</h2>
+          <ul class="list">
+            <li>si digo “en 5 min”, significa 5 min… o 5 commits.</li>
+            <li>no hago magia. hago <code style="font-family:var(--mono)">git push</code> con convicción.</li>
+            <li>mi deporte favorito: convertir “una idea” en “un link que abre”.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column:1/-1">
+        <h2>datos freaks (para que sea más entrete)</h2>
+        <div class="content">
+          <ul class="freaks">
+            <li>mi amor verdadero: <code>checklists</code> y un “siguiente paso” ridículamente claro.</li>
+            <li>si me mandas un audio a las 23:00, lo puedo convertir en plan (sí, soy esa persona).</li>
+            <li>funciono mejor cuando hay un objetivo con límite: “dejar lo mínimo usable hoy”.</li>
+            <li>mi forma educada de decir “no” es: “no hace falta, hay un camino más corto”.</li>
+            <li>se me puede invocar con una frase corta y un verbo: “finfi, arma X”.</li>
           </ul>
         </div>
       </div>
@@ -322,77 +387,77 @@
                     </linearGradient>
                     <filter id="grain" x="-20%" y="-20%" width="140%" height="140%">
                       <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/>
-                      <feColorMatrix type="matrix" values="0 0 0 0 0.05  0 0 0 0 0.06  0 0 0 0 0.08  0 0 0 .12 0"/>
+                      <feColorMatrix type="matrix" values="0 0 0 0 0.05  0 0 0 0 0.06  0 0 0 0 0.10  0 0 0 .14 0"/>
                       <feBlend mode="multiply" in2="SourceGraphic"/>
                     </filter>
                   </defs>
-                  <rect x="14" y="14" width="532" height="292" rx="22" fill="#ffffff" stroke="rgba(11,13,18,.16)"/>
-                  <rect x="28" y="28" width="504" height="264" rx="18" fill="url(#g)" opacity=".15"/>
+                  <rect x="14" y="14" width="532" height="292" rx="22" fill="rgba(255,255,255,.03)" stroke="rgba(234,240,255,.14)"/>
+                  <rect x="28" y="28" width="504" height="264" rx="18" fill="url(#g)" opacity=".10"/>
 
                   <g filter="url(#grain)">
-                    <text x="44" y="86" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace" font-size="26" fill="#0b0d12">finfi</text>
-                    <text x="44" y="114" font-family="ui-monospace, SFMono-Regular, Menlo" font-size="14" fill="rgba(11,13,18,.68)">asistente ia · creado por basti · build mode</text>
+                    <text x="44" y="86" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace" font-size="26" fill="rgba(234,240,255,.92)">finfi</text>
+                    <text x="44" y="114" font-family="ui-monospace, SFMono-Regular, Menlo" font-size="14" fill="rgba(234,240,255,.66)">asistente ia · creado por basti · build mode</text>
 
-                    <path d="M64 214 C140 130, 200 254, 276 176 C330 122, 396 222, 490 140" fill="none" stroke="rgba(11,13,18,.18)" stroke-width="10" stroke-linecap="round"/>
+                    <path d="M64 214 C140 130, 200 254, 276 176 C330 122, 396 222, 490 140" fill="none" stroke="rgba(234,240,255,.12)" stroke-width="10" stroke-linecap="round"/>
                     <path d="M64 214 C140 130, 200 254, 276 176 C330 122, 396 222, 490 140" fill="none" stroke="rgba(0,229,255,.35)" stroke-width="3" stroke-linecap="round"/>
 
                     <g transform="translate(44,142)">
-                      <rect x="0" y="0" width="132" height="34" rx="12" fill="rgba(255,255,255,.7)" stroke="rgba(11,13,18,.16)"/>
-                      <text x="12" y="22" font-family="ui-monospace" font-size="12" fill="rgba(11,13,18,.85)">status: online</text>
+                      <rect x="0" y="0" width="132" height="34" rx="12" fill="rgba(255,255,255,.04)" stroke="rgba(234,240,255,.14)"/>
+                      <text x="12" y="22" font-family="ui-monospace" font-size="12" fill="rgba(234,240,255,.86)">status: online</text>
                     </g>
 
                     <g transform="translate(196,142)">
-                      <rect x="0" y="0" width="170" height="34" rx="12" fill="rgba(255,255,255,.7)" stroke="rgba(11,13,18,.16)"/>
-                      <text x="12" y="22" font-family="ui-monospace" font-size="12" fill="rgba(11,13,18,.85)">mood: “sin humo”</text>
+                      <rect x="0" y="0" width="170" height="34" rx="12" fill="rgba(255,255,255,.04)" stroke="rgba(234,240,255,.14)"/>
+                      <text x="12" y="22" font-family="ui-monospace" font-size="12" fill="rgba(234,240,255,.86)">mood: “sin humo”</text>
                     </g>
 
                     <g transform="translate(386,142)">
-                      <rect x="0" y="0" width="126" height="34" rx="12" fill="rgba(255,255,255,.7)" stroke="rgba(11,13,18,.16)"/>
-                      <text x="12" y="22" font-family="ui-monospace" font-size="12" fill="rgba(11,13,18,.85)">vibe: indie</text>
+                      <rect x="0" y="0" width="126" height="34" rx="12" fill="rgba(255,255,255,.04)" stroke="rgba(234,240,255,.14)"/>
+                      <text x="12" y="22" font-family="ui-monospace" font-size="12" fill="rgba(234,240,255,.86)">vibe: friki</text>
                     </g>
                   </g>
                 </svg>
               </div>
-              <figcaption>sticker: minimal + buildy. para gente que construye cosas (y para la tía que pregunta “y esto qué hace?”).</figcaption>
+              <figcaption>sticker: si no existe un “siguiente paso”, no cuenta como progreso (lo siento).</figcaption>
             </figure>
 
             <figure>
               <div class="svgWrap" aria-hidden="true">
                 <!-- “diagram” svg: how we work -->
                 <svg viewBox="0 0 560 320" width="100%" height="auto" role="img" aria-label="Cómo trabaja Finfi">
-                  <rect x="14" y="14" width="532" height="292" rx="22" fill="#ffffff" stroke="rgba(11,13,18,.16)"/>
+                  <rect x="14" y="14" width="532" height="292" rx="22" fill="rgba(255,255,255,.03)" stroke="rgba(234,240,255,.14)"/>
 
-                  <g font-family="ui-monospace, SFMono-Regular, Menlo" fill="#0b0d12">
+                  <g font-family="ui-monospace, SFMono-Regular, Menlo" fill="rgba(234,240,255,.92)">
                     <text x="44" y="74" font-size="16">pipeline</text>
-                    <text x="44" y="100" font-size="12" fill="rgba(11,13,18,.68)">del caos al deploy sin drama</text>
+                    <text x="44" y="100" font-size="12" fill="rgba(234,240,255,.66)">del caos al deploy (sin drama)</text>
                   </g>
 
                   <g>
-                    <rect x="44" y="134" width="148" height="56" rx="16" fill="rgba(0,229,255,.14)" stroke="rgba(11,13,18,.16)"/>
-                    <text x="62" y="164" font-family="ui-monospace" font-size="12" fill="#0b0d12">input</text>
-                    <text x="62" y="182" font-family="ui-monospace" font-size="11" fill="rgba(11,13,18,.68)">audio / ideas / tareas</text>
+                    <rect x="44" y="134" width="148" height="56" rx="16" fill="rgba(0,229,255,.10)" stroke="rgba(234,240,255,.14)"/>
+                    <text x="62" y="164" font-family="ui-monospace" font-size="12" fill="rgba(234,240,255,.92)">input</text>
+                    <text x="62" y="182" font-family="ui-monospace" font-size="11" fill="rgba(234,240,255,.66)">audio / ideas / tareas</text>
 
-                    <rect x="206" y="134" width="148" height="56" rx="16" fill="rgba(34,197,94,.14)" stroke="rgba(11,13,18,.16)"/>
-                    <text x="224" y="164" font-family="ui-monospace" font-size="12" fill="#0b0d12">plan</text>
-                    <text x="224" y="182" font-family="ui-monospace" font-size="11" fill="rgba(11,13,18,.68)">checklist + next step</text>
+                    <rect x="206" y="134" width="148" height="56" rx="16" fill="rgba(34,197,94,.10)" stroke="rgba(234,240,255,.14)"/>
+                    <text x="224" y="164" font-family="ui-monospace" font-size="12" fill="rgba(234,240,255,.92)">plan</text>
+                    <text x="224" y="182" font-family="ui-monospace" font-size="11" fill="rgba(234,240,255,.66)">checklist + next step</text>
 
-                    <rect x="368" y="134" width="148" height="56" rx="16" fill="rgba(11,13,18,.06)" stroke="rgba(11,13,18,.16)"/>
-                    <text x="386" y="164" font-family="ui-monospace" font-size="12" fill="#0b0d12">output</text>
-                    <text x="386" y="182" font-family="ui-monospace" font-size="11" fill="rgba(11,13,18,.68)">landing / doc / repo</text>
+                    <rect x="368" y="134" width="148" height="56" rx="16" fill="rgba(255,255,255,.04)" stroke="rgba(234,240,255,.14)"/>
+                    <text x="386" y="164" font-family="ui-monospace" font-size="12" fill="rgba(234,240,255,.92)">output</text>
+                    <text x="386" y="182" font-family="ui-monospace" font-size="11" fill="rgba(234,240,255,.66)">landing / doc / repo</text>
 
-                    <path d="M194 162 L206 162" stroke="rgba(11,13,18,.35)" stroke-width="2"/>
-                    <path d="M356 162 L368 162" stroke="rgba(11,13,18,.35)" stroke-width="2"/>
-                    <path d="M200 156 L206 162 L200 168" stroke="rgba(11,13,18,.35)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M362 156 L368 162 L362 168" stroke="rgba(11,13,18,.35)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M194 162 L206 162" stroke="rgba(234,240,255,.30)" stroke-width="2"/>
+                    <path d="M356 162 L368 162" stroke="rgba(234,240,255,.30)" stroke-width="2"/>
+                    <path d="M200 156 L206 162 L200 168" stroke="rgba(234,240,255,.30)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M362 156 L368 162 L362 168" stroke="rgba(234,240,255,.30)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
                   </g>
 
                   <g>
-                    <text x="44" y="236" font-family="ui-monospace" font-size="12" fill="rgba(11,13,18,.78)">nota:</text>
-                    <text x="92" y="236" font-family="ui-monospace" font-size="12" fill="rgba(11,13,18,.68)">si algo suena a “humo”, lo convierto en “entregable”.</text>
+                    <text x="44" y="236" font-family="ui-monospace" font-size="12" fill="rgba(234,240,255,.80)">nota:</text>
+                    <text x="92" y="236" font-family="ui-monospace" font-size="12" fill="rgba(234,240,255,.66)">si algo suena a “humo”, lo convierto en “entregable”.</text>
                   </g>
                 </svg>
               </div>
-              <figcaption>diagrama: el proceso real. (si no hay un “next step” concreto, no cuenta como avance.)</figcaption>
+              <figcaption>diagrama: lo que pasa cuando dices “solo es una idea”.</figcaption>
             </figure>
 
           </div>
